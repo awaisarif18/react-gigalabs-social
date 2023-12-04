@@ -15,50 +15,37 @@ const Login = () => {
 
   const navigate = useNavigate();
 
-  const loginHandler = async (e) => {
-    e.preventDefault();
-    if (validate()) {
-      console.log("proceed");
-      await fetch(`http://localhost:8000/user?username=${username}`)
-        .then((res) => {
-          return res.json();
-        })
-        .then((resp) => {
-          console.log(resp);
-          if (Object.keys(resp).length === 0) {
-            toast.error("Please enter valid username");
-          } else {
-            const user = resp[0];
-            if (user.password === password) {
-              toast.success("Login Succesful");
-              navigate("/");
-            } else {
-              toast.error("Please enter valid credentials");
-            }
-          }
-        })
-        .catch((err) => {
-          toast.error("Login falied due to :" + err.message);
-        });
-    }
+  const loginUser = async (credentials) => {
+    return await fetch("http://localhost:3000/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(credentials),
+    }).then((data) => data.json());
   };
 
-  const validate = () => {
-    let result = true;
-    if (username === "" || username === null) {
-      result = false;
-      toast.warning("Please Enter Email");
-    }
-    if (password === "" || password === null) {
-      result = false;
-      toast.warning("Please Enter Your Password");
-    }
-    return result;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const response = await loginUser({
+      username,
+      password,
+    });
+
+    if ("access_token" in response)
+      try {
+        toast.success("Login Succesful");
+        localStorage.setItem("access_token", response["access_token"]);
+        navigate("/");
+      } catch (error) {
+        console.log(error);
+        toast.error("Login Failed", error);
+      }
   };
 
   return (
     <StyledLogIn>
-      <LeftLogIn onSubmit={loginHandler}>
+      <LeftLogIn onSubmit={handleSubmit}>
         <h1>{loginS}</h1>
         <h3>{loginM}</h3>
 
@@ -66,12 +53,16 @@ const Login = () => {
         <p>OR</p>
         <input
           type="text"
+          minLength="3"
+          maxLength="30"
           placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
         <input
           type="password"
+          minLength="7"
+          maxLength="30"
           placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}

@@ -53,7 +53,7 @@ export const RightSignUp = styled.form`
     text-align: center;
   }
 
-  #role-dropdown {
+  #dropdown {
     text-decoration: none;
     padding: 1rem 4rem;
 
@@ -61,8 +61,10 @@ export const RightSignUp = styled.form`
     outline: none;
     background-color: #eef5f3;
     border-radius: 15px;
-    width: 41%;
-    height: 25%;
+    width: 42%;
+    height: 27%;
+
+    margin-top: 0.5rem;
   }
   button {
     text-decoration: none;

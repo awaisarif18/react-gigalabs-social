@@ -1,8 +1,8 @@
 import { StyledButton } from "./styles";
 
-const Button = ({ onClick, label, type, styles }) => {
+const Button = ({ func, label, type, styles }) => {
   return (
-    <StyledButton style={styles ? styles : {}} type={type}>
+    <StyledButton style={styles ? styles : {}} type={type} onClick={func}>
       {label}
     </StyledButton>
   );

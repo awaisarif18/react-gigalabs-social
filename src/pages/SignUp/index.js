@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import SideLogIn from "../../components/SideLogin";
 import Icons from "../../components/Icons";
 import { StyledSignUp } from "./styles";
@@ -9,36 +9,82 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/base/Button";
+import axios from "axios";
 
 const SignUp = () => {
   const [username, setUsername] = useState("");
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [department, setDepartment] = useState("");
-  const [role, setRole] = useState("");
+  const [departments, setDepartments] = useState([]);
+  const [roles, setRoles] = useState([]);
+  const [selectedDepartment, setSelectedDepartment] = useState(1);
+  const [selectedRole, setSelectedRole] = useState(1);
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchRolesAndDepartments = async () => {
+      try {
+        const rolesResponse = await fetch("http://localhost:3000/role");
+        const departmentsResponse = await fetch(
+          "http://localhost:3000/department"
+        );
+
+        if (rolesResponse.ok && departmentsResponse.ok) {
+          const rolesData = await rolesResponse.json();
+          const departmentsData = await departmentsResponse.json();
+
+          const filteredRoles = rolesData.filter(
+            (role) => role.name !== "admin"
+          );
+
+          setRoles(filteredRoles);
+          setDepartments(departmentsData);
+        } else {
+          toast.error("Failed to fetch roles and departments");
+        }
+      } catch (error) {
+        toast.error(`Failed: ${error.message}`);
+      }
+    };
+
+    fetchRolesAndDepartments();
+  }, []);
 
   const SignUpHandler = async (e) => {
     e.preventDefault();
 
-    const signUpObj = { username, nickname, email, password, department, role };
+    const signUpObj = {
+      username,
+      email,
+      password,
+      nickname,
+      Department: selectedDepartment,
+      Role: selectedRole,
+    };
 
-    await fetch("http://localhost:8000/user", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(signUpObj),
-    })
-      .then((res) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/user",
+        signUpObj
+      );
+
+      if (response.status === 201) {
+        console.log("success");
+        console.log(signUpObj);
         navigate("/login");
-        toast.success("Registered Succesfully !", {
+        toast.success("Registered Successfully!", {
           position: toast.POSITION.TOP_RIGHT,
         });
-      })
-      .catch((err) => {
-        toast.error("Failed :", err.message);
-      });
+      } else {
+        console.log("Error:", response.data);
+        toast.error("Failed to register");
+      }
+    } catch (error) {
+      console.error("Error:", error.message);
+      toast.error("Failed to register");
+    }
   };
 
   return (
@@ -58,6 +104,8 @@ const SignUp = () => {
           <input
             required
             type="text"
+            minLength="3"
+            maxLength="30"
             placeholder="Name"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
@@ -65,6 +113,8 @@ const SignUp = () => {
           <input
             required
             type="email"
+            minLength="7"
+            maxLength="30"
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -72,6 +122,8 @@ const SignUp = () => {
           <input
             required
             type="password"
+            minLength="7"
+            maxLength="30"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -79,26 +131,37 @@ const SignUp = () => {
           <input
             required
             type="text"
+            minLength="4"
+            maxLength="30"
             placeholder="Nickname"
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
           />
-          <input
-            required
-            type="text"
-            placeholder="Department"
-            value={department}
-            onChange={(e) => setDepartment(e.target.value)}
-          />
+
+          <select
+            name="Department"
+            id="dropdown"
+            value={selectedDepartment}
+            onChange={(e) => setSelectedDepartment(e.target.value)}
+          >
+            {departments.map((data, index) => (
+              <option key={index} value={data.id}>
+                {data.name}
+              </option>
+            ))}
+          </select>
 
           <select
             name="Role"
-            id="role-dropdown"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
+            id="dropdown"
+            value={selectedRole}
+            onChange={(e) => setSelectedRole(e.target.value)}
           >
-            <option>Developer</option>
-            <option>Project Manager</option>
+            {roles.map((data, index) => (
+              <option key={index} value={data.id}>
+                {data.name}
+              </option>
+            ))}
           </select>
         </InputContainer>
 
@@ -110,6 +173,7 @@ const SignUp = () => {
             padding: "1rem 5rem",
             borderRadius: "25px",
             border: "none",
+            marginTop: "2rem",
           }}
         />
       </RightSignUp>
