@@ -5,6 +5,7 @@ import logo from "../../assets/images/logo.webp";
 import Button from "../base/Button";
 import { paths } from "../../constants/paths";
 import { toast } from "react-toastify";
+import DynamicNav from "../dynamic nav";
 
 const logoutHandler = () => {
   const token = localStorage.getItem("access_token");
@@ -18,7 +19,7 @@ const logoutHandler = () => {
   }
 };
 
-const NavBar = () => {
+const NavBar = ({ storageStatus, setStorageStatus }) => {
   return (
     <StyledNav>
       <Link to={paths.home}>
@@ -32,7 +33,8 @@ const NavBar = () => {
           <Link to="/employees">Employees</Link>
         </li>
       </ul>
-      <div>
+      <DynamicNav />
+      {/* <div>
         <Link to={paths.SignUp}>
           <Button
             label="Register"
@@ -71,7 +73,7 @@ const NavBar = () => {
             border: "none",
           }}
         />
-      </div>
+      </div> */}
     </StyledNav>
   );
 };
