@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { StyledNav } from "./styles";
 import { Link } from "react-router-dom";
 import logo from "../../assets/images/logo.webp";
@@ -7,19 +7,19 @@ import { paths } from "../../constants/paths";
 import { toast } from "react-toastify";
 import DynamicNav from "../dynamic nav";
 
-const logoutHandler = () => {
-  const token = localStorage.getItem("access_token");
-  if (token) {
-    console.log(token);
-    localStorage.removeItem("access_token");
-    console.log("Success");
-    toast.success("Logout Successful");
-  } else {
-    toast.error("User needs to login");
-  }
-};
+// const logoutHandler = () => {
+//   const token = localStorage.getItem("access_token");
+//   if (token) {
+//     console.log(token);
+//     localStorage.removeItem("access_token");
+//     console.log("Success");
+//     toast.success("Logout Successful");
+//   } else {
+//     toast.error("User needs to login");
+//   }
+// };
 
-const NavBar = ({ storageStatus, setStorageStatus }) => {
+const NavBar = () => {
   return (
     <StyledNav>
       <Link to={paths.home}>

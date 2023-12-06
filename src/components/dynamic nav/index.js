@@ -1,18 +1,30 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { paths } from "../../constants/paths";
 import { Link } from "react-router-dom";
 import Button from "../base/Button";
 import { toast } from "react-toastify";
+import useUser from "../../Hooks/useUser";
+import { useDispatch } from "react-redux";
+import { logout } from "../../state/loggedStatus/statusSlice";
+import { useNavigate } from "react-router-dom";
 
 const DynamicNav = () => {
-  const [storageStatus, setStorageStatus] = useState(false);
-  const [token, setToken] = useState("");
+  const isLogged = useUser();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  console.log("isLogged", isLogged);
+
   const logoutHandler = () => {
     const token = localStorage.getItem("access_token");
     if (token) {
-      console.log(token);
+      // console.log(token);
       localStorage.removeItem("access_token");
-      setStorageStatus(false);
+      localStorage.removeItem("user");
+
+      dispatch(logout());
+      navigate("/");
+
       console.log("Success");
       toast.success("Logout Successful");
     } else {
@@ -20,24 +32,21 @@ const DynamicNav = () => {
     }
   };
 
-  useEffect(() => {
-    setToken(localStorage.getItem("access_token"));
-    console.log(token);
-    console.log("Rendered");
-
-    if (token) {
-      setStorageStatus(true);
-      console.log("token found");
-    } else {
-      setStorageStatus(false);
-      console.log("token gone");
-    }
-  }, [storageStatus]);
-
-  if (storageStatus === true) {
-    setStorageStatus(false);
+  if (isLogged) {
     return (
       <div>
+        <Link to={paths.profile}>
+          <Button
+            label="Profile"
+            styles={{
+              width: "100px",
+              textDecoration: "none",
+              padding: "1rem",
+              marginRight: "20px",
+              border: "none",
+            }}
+          />
+        </Link>
         <Button
           func={logoutHandler}
           label="Logout"

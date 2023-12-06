@@ -8,10 +8,13 @@ import { loginM, loginS } from "../../constants";
 import { toast } from "react-toastify";
 import Button from "../../components/base/Button";
 import { paths } from "../../constants/paths";
+import { useDispatch } from "react-redux";
+import { login } from "../../state/loggedStatus/statusSlice";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
 
@@ -35,7 +38,12 @@ const Login = () => {
     if ("access_token" in response)
       try {
         toast.success("Login Succesful");
+        console.log(response["user"]);
         localStorage.setItem("access_token", response["access_token"]);
+        localStorage.setItem("user", JSON.stringify(response["user"]));
+        // const user = JSON.parse(localStorage.getItem("user"));
+        // console.log(user);
+        dispatch(login());
         navigate("/");
       } catch (error) {
         console.log(error);

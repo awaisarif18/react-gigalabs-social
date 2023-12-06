@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import ReactDOM from "react-dom/client";
 import Layout from "./components/Layout";
 import Login from "./pages/Login/index";
@@ -11,6 +11,9 @@ import { ToastContainer } from "react-toastify";
 import OneEmployee from "./pages/OneEmployee";
 import { paths } from "./constants/paths";
 import { Root } from "./styles/style";
+import Profile from "./pages/Profile";
+import { Provider } from "react-redux";
+import { store } from "./state/store";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +46,10 @@ const router = createBrowserRouter([
         path: paths.OneEmployee,
         element: <OneEmployee />,
       },
+      {
+        path: paths.profile,
+        element: <Profile />,
+      },
     ],
   },
 ]);
@@ -50,8 +57,10 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
-  <Root>
-    <RouterProvider router={router} />
-    <ToastContainer />
-  </Root>
+  <Provider store={store}>
+    <Root>
+      <RouterProvider router={router} />
+      <ToastContainer />
+    </Root>
+  </Provider>
 );
