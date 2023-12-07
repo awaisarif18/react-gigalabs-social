@@ -3,8 +3,14 @@ import { StyledInput, UpdateForm } from "./style";
 import { toast } from "react-toastify";
 import Button from "../../components/base/Button";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../../state/loggedStatus/statusSlice";
 
 const UpdateUser = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const [username, setUsername] = useState("");
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
@@ -14,12 +20,19 @@ const UpdateUser = () => {
   const [profile, setProfile] = useState({});
   const [selectedDepartment, setSelectedDepartment] = useState(1);
   const [selectedRole, setSelectedRole] = useState(1);
-
   const [gotData, setGotData] = useState(false);
 
   useEffect(() => {
     const fetchingProfile = () => {
       setProfile(JSON.parse(localStorage.getItem("user")));
+      setUsername(JSON.parse(localStorage.getItem("user")).username);
+      setNickname(JSON.parse(localStorage.getItem("user")).nickname);
+      setEmail(JSON.parse(localStorage.getItem("user")).email);
+      setPassword(JSON.parse(localStorage.getItem("user")).password);
+      setSelectedDepartment(
+        JSON.parse(localStorage.getItem("user")).Department.id
+      );
+      setSelectedRole(JSON.parse(localStorage.getItem("user")).Role.id);
       setGotData(true);
     };
 
@@ -64,7 +77,22 @@ const UpdateUser = () => {
       Role: selectedRole,
     };
 
-    // axios.patch(`http://localhost:3000/user/${profile.id}`, signUpObj);
+    await axios
+      .patch(`http://localhost:3000/user/${profile.id}`, signUpObj)
+      .then((res) => {
+        console.log(res);
+        localStorage.setItem("user", JSON.stringify(res.data));
+        localStorage.removeItem("access_token");
+        localStorage.removeItem("user");
+
+        dispatch(logout());
+        navigate("/");
+        toast.success("User updated successfully");
+      })
+      .catch((err) => {
+        toast.error(err.message);
+        console.log(err);
+      });
 
     console.log(signUpObj);
   };
@@ -80,14 +108,14 @@ const UpdateUser = () => {
               maxLength="30"
               placeholder="Name"
               onChange={(e) => setUsername(e.target.value)}
-              value={profile.username}
+              value={username}
             />
             <input
               type="email"
               minLength="7"
               maxLength="30"
               placeholder="Email"
-              value={profile.email}
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <input
@@ -95,7 +123,7 @@ const UpdateUser = () => {
               minLength="7"
               maxLength="30"
               placeholder="Password"
-              value={profile.password}
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
             <input
@@ -103,7 +131,7 @@ const UpdateUser = () => {
               minLength="4"
               maxLength="30"
               placeholder="Nickname"
-              value={profile.nickname}
+              value={nickname}
               onChange={(e) => setNickname(e.target.value)}
             />
 
