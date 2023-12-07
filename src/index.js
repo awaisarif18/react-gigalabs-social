@@ -14,6 +14,7 @@ import { Root } from "./styles/style";
 import Profile from "./pages/Profile";
 import { Provider } from "react-redux";
 import { store } from "./state/store";
+import UpdateUser from "./pages/Update";
 
 const router = createBrowserRouter([
   {
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
       {
         path: paths.profile,
         element: <Profile />,
+      },
+      {
+        path: paths.update,
+        element: <UpdateUser />,
       },
     ],
   },

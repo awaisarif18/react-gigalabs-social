@@ -1,17 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { ProfileContainer } from "./style";
+import React, { Fragment, useEffect, useState } from "react";
+import {
+  ProfileContainer,
+  StyledButtons,
+  StyledHeading,
+  StyledInfo,
+} from "./style";
 import Button from "../../components/base/Button";
-import axios from "axios";
-import { toast } from "react-toastify";
-import { filter } from "lodash";
+import { useNavigate } from "react-router-dom";
+import Heading from "../../components/base/Heading";
+import Heading2 from "../../components/base/Heading2.js";
 
 const Profile = () => {
-  const [roles, setRoles] = useState([]);
-  const [departments, setDepartments] = useState([]);
-  const [profile, setProfile] = useState("");
-  const [userRole, setUserRole] = useState("");
-  const [userDepartment, setUserDepartment] = useState("");
-  const [profileObj, setProfileObj] = useState({});
+  const [profile, setProfile] = useState({});
+  const [gotData, setGotData] = useState(false); // [1
+  const navigate = useNavigate();
 
   // const token = localStorage.getItem("access_token");
 
@@ -21,81 +23,66 @@ const Profile = () => {
   //     Authorization: `Bearer ${token}`,
   //   },
   // };
+  const deleteProfile = async () => {
+    const userId = profile.id;
+    const response = await fetch(`http://localhost:3000/user/${userId}`, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (response.ok) {
+          localStorage.removeItem("access_token");
+          localStorage.removeItem("user");
+          console.log("User Deleted Successfully");
+          navigate("/");
+        }
+      })
+      .catch((err) => console.log(err));
 
-  const fetchRolesAndDepartments = async () => {
-    try {
-      const rolesResponse = await fetch("http://localhost:3000/role");
-      const departmentsResponse = await fetch(
-        "http://localhost:3000/department"
-      );
-
-      if (rolesResponse.ok && departmentsResponse.ok) {
-        const rolesData = await rolesResponse.json();
-        const departmentsData = await departmentsResponse.json();
-
-        const filteredRoles = rolesData.filter((role) => role.name !== "admin");
-
-        setRoles(filteredRoles);
-        setDepartments(departmentsData);
-      } else {
-        toast.error("Failed to fetch roles and departments");
-      }
-    } catch (error) {
-      toast.error(`Failed: ${error.message}`);
-    }
+    console.log(response);
   };
 
-  const fetchingProfile = async () => {
-    setProfile(JSON.parse(localStorage.getItem("user")));
-    // const user = axios.get("http://localhost:3000/auth/profile", config);
-
-    // console.log(user);
-  };
-
-  const settingProfile = async () => {
-    setUserRole(filter((role) => role.id === profile.role_id));
-    setUserDepartment(
-      filter((department) => department.id === profile.department_id)
-    );
-    setProfileObj({
-      username: profile.username,
-      email: profile.email,
-      password: profile.password,
-      nickname: profile.nickname,
-      Department: userDepartment.name,
-      Role: userRole.name,
-    });
+  const updateProfile = async () => {
+    navigate("/update");
   };
 
   useEffect(() => {
+    const fetchingProfile = async () => {
+      setProfile(JSON.parse(localStorage.getItem("user")));
+
+      setGotData(true);
+      // const user = axios.get("http://localhost:3000/auth/profile", config);
+    };
     fetchingProfile();
-    fetchRolesAndDepartments();
-    settingProfile();
+    console.log("UseEffect Profile: ", profile);
+    console.log("Use Effect gotData: ", gotData);
   }, []);
 
   console.log("profile: ", profile);
-  console.log("role: ", roles);
-  console.log("departments:", departments);
-  console.log("User Profiles: ", profileObj);
+  console.log("gotData: ", gotData);
 
   return (
     <ProfileContainer>
-      {profileObj && (
-        <>
-          <div>
-            <h1>{profile.username}</h1>
-          </div>
-          <div>
-            <h3>{profile.email}</h3>
-          </div>
-          <div>
-            <h3>{profileObj.Department}</h3>
-          </div>
-          <div>
-            <h3>Department</h3>
-          </div>
+      {gotData && (
+        <Fragment>
+          <StyledHeading>
+            <Heading content="Profile" />
+            <Heading2 content={profile.username} />
+          </StyledHeading>
+          <StyledInfo>
+            <div>
+              <h3>Email</h3>
+              <h3>Department</h3>
+              <h3>Role</h3>
+            </div>
 
-          <div>
+            <div>
+              <h3>{profile.email}</h3>
+              <h3>{profile.Department.name}</h3>
+              <h3>{profile.Role.name}</h3>
+            </div>
+          </StyledInfo>
+
+          <StyledButtons>
             <Button
               styles={{
                 width: "100px",
@@ -105,6 +92,7 @@ const Profile = () => {
                 border: "none",
               }}
               label="Update"
+              func={updateProfile}
             />
             <Button
               styles={{
@@ -115,9 +103,10 @@ const Profile = () => {
                 border: "none",
               }}
               label="Delete"
+              func={deleteProfile}
             />
-          </div>
-        </>
+          </StyledButtons>
+        </Fragment>
       )}
     </ProfileContainer>
   );

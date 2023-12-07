@@ -7,4 +7,5 @@ export const paths = {
   Employees: "/employees",
   OneEmployee: "/employee/:id",
   profile: "/profile",
+  update: "/update",
 };
