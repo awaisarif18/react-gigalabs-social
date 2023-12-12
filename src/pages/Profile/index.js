@@ -9,10 +9,11 @@ import Button from "../../components/base/Button";
 import { useNavigate } from "react-router-dom";
 import Heading from "../../components/base/Heading";
 import Heading2 from "../../components/base/Heading2.js";
+import { toast } from "react-toastify";
 
 const Profile = () => {
   const [profile, setProfile] = useState({});
-  const [gotData, setGotData] = useState(false); // [1
+  const [gotData, setGotData] = useState(false);
   const navigate = useNavigate();
 
   // const token = localStorage.getItem("access_token");
@@ -32,6 +33,7 @@ const Profile = () => {
         if (response.ok) {
           localStorage.removeItem("access_token");
           localStorage.removeItem("user");
+          toast.success("User Deleted Successfully");
           console.log("User Deleted Successfully");
           navigate("/");
         }

@@ -19,6 +19,8 @@ const Login = () => {
   const navigate = useNavigate();
 
   const loginUser = async (credentials) => {
+    console.log("Login Credentials:", { username, password });
+
     return await fetch("http://localhost:3000/auth/login", {
       method: "POST",
       headers: {
@@ -41,8 +43,6 @@ const Login = () => {
         console.log(response["user"]);
         localStorage.setItem("access_token", response["access_token"]);
         localStorage.setItem("user", JSON.stringify(response["user"]));
-        // const user = JSON.parse(localStorage.getItem("user"));
-        // console.log(user);
         dispatch(login());
         navigate("/");
       } catch (error) {

@@ -1,17 +1,34 @@
 import styled from "styled-components";
 
+export const UpdatePage = styled.div`
+  width: 100%;
+  background-color: #ffffff;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+`;
+
 export const StyledInput = styled.div`
-  width: 40vw;
+  width: 25%;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
 `;
 
+export const UpdateHeader = styled.div`
+  width: 40%;
+
+  min-height: 25vh;
+  margin: 0 auto;
+`;
+
 export const UpdateForm = styled.form`
-  width: 100%;
+  width: 50%;
   text-align: center;
   background-color: #ffffff;
-  height: 100vh;
+  min-height: 70vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -60,10 +77,10 @@ export const UpdateForm = styled.form`
     outline: none;
     background-color: #eef5f3;
     border-radius: 15px;
-    width: 42%;
-    height: 27%;
-
-    margin-top: 0.5rem;
+    width: 17vw;
+    height: 9vh;
+    margin: 0.5rem auto;
+    /* margin-top: 0.5rem; */
   }
   button {
     text-decoration: none;
@@ -80,4 +97,13 @@ export const UpdateForm = styled.form`
     font-size: 1rem;
     font-weight: 400;
   }
+`;
+
+export const ButtonContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-left: 4.5rem;
 `;

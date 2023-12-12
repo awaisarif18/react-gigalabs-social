@@ -10,6 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/base/Button";
 import axios from "axios";
+import { hashPassword } from "../../components/base/Util";
 
 const SignUp = () => {
   const [username, setUsername] = useState("");
@@ -55,6 +56,9 @@ const SignUp = () => {
   const SignUpHandler = async (e) => {
     e.preventDefault();
 
+    // const hashedPassword = await hashPassword(password);
+    // console.log("Hashed Password:", hashedPassword);
+
     const signUpObj = {
       username,
       email,
@@ -63,6 +67,8 @@ const SignUp = () => {
       Department: selectedDepartment,
       Role: selectedRole,
     };
+
+    console.log("Sign Up Object:", signUpObj);
 
     try {
       const response = await axios.post(

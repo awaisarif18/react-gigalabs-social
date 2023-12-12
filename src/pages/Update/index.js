@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { StyledInput, UpdateForm } from "./style";
+import {
+  ButtonContainer,
+  StyledInput,
+  UpdateForm,
+  UpdateHeader,
+  UpdatePage,
+} from "./style";
 import { toast } from "react-toastify";
 import Button from "../../components/base/Button";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "../../state/loggedStatus/statusSlice";
+import Heading from "../../components/base/Heading";
 
 const UpdateUser = () => {
   const navigate = useNavigate();
@@ -14,7 +21,6 @@ const UpdateUser = () => {
   const [username, setUsername] = useState("");
   const [nickname, setNickname] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [departments, setDepartments] = useState([]);
   const [roles, setRoles] = useState([]);
   const [profile, setProfile] = useState({});
@@ -28,7 +34,6 @@ const UpdateUser = () => {
       setUsername(JSON.parse(localStorage.getItem("user")).username);
       setNickname(JSON.parse(localStorage.getItem("user")).nickname);
       setEmail(JSON.parse(localStorage.getItem("user")).email);
-      setPassword(JSON.parse(localStorage.getItem("user")).password);
       setSelectedDepartment(
         JSON.parse(localStorage.getItem("user")).Department.id
       );
@@ -71,7 +76,6 @@ const UpdateUser = () => {
     const signUpObj = {
       username,
       email,
-      password,
       nickname,
       Department: selectedDepartment,
       Role: selectedRole,
@@ -98,84 +102,83 @@ const UpdateUser = () => {
   };
 
   return (
-    <>
+    <UpdatePage>
       {gotData && (
-        <UpdateForm onSubmit={UpdateHandler}>
-          <StyledInput>
-            <input
-              type="text"
-              minLength="3"
-              maxLength="30"
-              placeholder="Name"
-              onChange={(e) => setUsername(e.target.value)}
-              value={username}
-            />
-            <input
-              type="email"
-              minLength="7"
-              maxLength="30"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-            <input
-              type="password"
-              minLength="7"
-              maxLength="30"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <input
-              type="text"
-              minLength="4"
-              maxLength="30"
-              placeholder="Nickname"
-              value={nickname}
-              onChange={(e) => setNickname(e.target.value)}
-            />
+        <>
+          <UpdateHeader>
+            <Heading content={`Edit ${profile.username} Profile`} />
+          </UpdateHeader>
+          <UpdateForm onSubmit={UpdateHandler}>
+            <StyledInput>
+              <input
+                type="text"
+                minLength="3"
+                maxLength="30"
+                placeholder="Name"
+                onChange={(e) => setUsername(e.target.value)}
+                value={username}
+              />
+              <input
+                type="email"
+                minLength="7"
+                maxLength="30"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
 
-            <select
-              name="Department"
-              id="dropdown"
-              value={selectedDepartment}
-              onChange={(e) => setSelectedDepartment(e.target.value)}
-            >
-              {departments.map((data, index) => (
-                <option key={index} value={data.id}>
-                  {data.name}
-                </option>
-              ))}
-            </select>
+              <input
+                type="text"
+                minLength="4"
+                maxLength="30"
+                placeholder="Nickname"
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+              />
 
-            <select
-              name="Role"
-              id="dropdown"
-              value={selectedRole}
-              onChange={(e) => setSelectedRole(e.target.value)}
-            >
-              {roles.map((data, index) => (
-                <option key={index} value={data.id}>
-                  {data.name}
-                </option>
-              ))}
-            </select>
-          </StyledInput>
+              <select
+                name="Department"
+                id="dropdown"
+                value={selectedDepartment}
+                onChange={(e) => setSelectedDepartment(e.target.value)}
+              >
+                {departments.map((data, index) => (
+                  <option key={index} value={data.id}>
+                    {data.name}
+                  </option>
+                ))}
+              </select>
 
-          <Button
-            label="Update"
-            type="submit"
-            styles={{
-              textDecoration: "none",
-              padding: "1rem 5rem",
-              borderRadius: "25px",
-              border: "none",
-              marginTop: "2rem",
-            }}
-          />
-        </UpdateForm>
+              <select
+                name="Role"
+                id="dropdown"
+                value={selectedRole}
+                onChange={(e) => setSelectedRole(e.target.value)}
+              >
+                {roles.map((data, index) => (
+                  <option key={index} value={data.id}>
+                    {data.name}
+                  </option>
+                ))}
+              </select>
+            </StyledInput>
+            <ButtonContainer>
+              <Button
+                label="Update"
+                type="submit"
+                styles={{
+                  textDecoration: "none",
+                  padding: "1rem 5rem",
+                  borderRadius: "25px",
+                  border: "none",
+                  margin: "2rem auto",
+                }}
+              />
+            </ButtonContainer>
+          </UpdateForm>
+        </>
       )}
-    </>
+    </UpdatePage>
   );
 };
 

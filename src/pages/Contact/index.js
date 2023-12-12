@@ -3,32 +3,45 @@ import { ContactContainer, StyledForm } from "./styles";
 import Button from "../../components/base/Button";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 const ContactUs = () => {
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
-  const [report, setReport] = useState("");
+  const [message, setMessage] = useState("");
 
   const navigate = useNavigate();
 
   const formHandler = async (e) => {
     e.preventDefault();
 
-    const formObj = { email, subject, report };
+    const formObj = { email, subject, message };
     console.log("------------", formObj);
 
-    await fetch("http://localhost:8000/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formObj),
-    })
-      .then(() => {
+    await axios
+      .post("http://localhost:3000/contact", formObj)
+      .then((res) => {
         navigate("/employees");
         toast.success("Message Sent Succesfully");
+        console.log("Message Sent Succesfully");
+        console.log(res);
       })
       .catch((err) => {
         toast.error("Message Failed" + err);
+        console.log("Message Failed" + err);
       });
+    // await fetch("http://localhost:3000/contact", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(formObj),
+    // })
+    //   .then(() => {
+    //     navigate("/employees");
+    //     toast.success("Message Sent Succesfully");
+    //   })
+    //   .catch((err) => {
+    //     toast.error("Message Failed" + err);
+    //   });
   };
 
   return (
@@ -48,6 +61,8 @@ const ContactUs = () => {
         <h1>Get in touch with us!</h1>
         <StyledForm onSubmit={formHandler}>
           <input
+            minLength={3}
+            maxLength={30}
             type="email"
             placeholder="Email"
             value={email}
@@ -55,16 +70,20 @@ const ContactUs = () => {
           />
           <input
             type="text"
+            minLength={3}
+            maxLength={30}
             placeholder="Subject"
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
           />
           <input
+            minLength="3"
+            maxLength="250"
             type="text"
             placeholder="Message"
             className="message"
-            value={report}
-            onChange={(e) => setReport(e.target.value)}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
           />
           <Button type="submit" label="Submit" />
         </StyledForm>
