@@ -10,6 +10,7 @@ import Button from "../../components/base/Button";
 import { paths } from "../../constants/paths";
 import { useDispatch } from "react-redux";
 import { login } from "../../state/loggedStatus/statusSlice";
+import axios from "axios";
 
 const Login = () => {
   const [username, setUsername] = useState("");
@@ -21,13 +22,16 @@ const Login = () => {
   const loginUser = async (credentials) => {
     console.log("Login Credentials:", { username, password });
 
-    return await fetch("http://localhost:3000/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(credentials),
-    }).then((data) => data.json());
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/auth/login",
+        credentials
+      );
+      console.log("Response Data", response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error: ", error);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -37,18 +41,20 @@ const Login = () => {
       password,
     });
 
-    if ("access_token" in response)
+    if (response && "access_token" in response) {
       try {
-        toast.success("Login Succesful");
-        console.log(response["user"]);
-        localStorage.setItem("access_token", response["access_token"]);
+        toast.success("Login Successful");
         localStorage.setItem("user", JSON.stringify(response["user"]));
+        localStorage.setItem("access_token", response["access_token"]);
         dispatch(login());
         navigate("/");
       } catch (error) {
         console.log(error);
         toast.error("Login Failed", error);
       }
+    } else {
+      toast.error("Incorrect Username or Password");
+    }
   };
 
   return (

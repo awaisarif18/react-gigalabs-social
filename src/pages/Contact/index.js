@@ -22,26 +22,14 @@ const ContactUs = () => {
       .post("http://localhost:3000/contact", formObj)
       .then((res) => {
         navigate("/employees");
-        toast.success("Message Sent Succesfully");
-        console.log("Message Sent Succesfully");
+        toast.success("Message Sent Successfully");
+        console.log("Message Sent Successfully");
         console.log(res);
       })
       .catch((err) => {
         toast.error("Message Failed" + err);
         console.log("Message Failed" + err);
       });
-    // await fetch("http://localhost:3000/contact", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify(formObj),
-    // })
-    //   .then(() => {
-    //     navigate("/employees");
-    //     toast.success("Message Sent Succesfully");
-    //   })
-    //   .catch((err) => {
-    //     toast.error("Message Failed" + err);
-    //   });
   };
 
   return (
@@ -61,8 +49,8 @@ const ContactUs = () => {
         <h1>Get in touch with us!</h1>
         <StyledForm onSubmit={formHandler}>
           <input
-            minLength={3}
-            maxLength={30}
+            minLength="3"
+            maxLength="30"
             type="email"
             placeholder="Email"
             value={email}
@@ -70,8 +58,8 @@ const ContactUs = () => {
           />
           <input
             type="text"
-            minLength={3}
-            maxLength={30}
+            minLength="3"
+            maxLength="30"
             placeholder="Subject"
             value={subject}
             onChange={(e) => setSubject(e.target.value)}

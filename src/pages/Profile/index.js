@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import Heading from "../../components/base/Heading";
 import Heading2 from "../../components/base/Heading2.js";
 import { toast } from "react-toastify";
+import axios from "axios";
 
 const Profile = () => {
   const [profile, setProfile] = useState({});
@@ -24,43 +25,28 @@ const Profile = () => {
   //     Authorization: `Bearer ${token}`,
   //   },
   // };
+
   const deleteProfile = async () => {
     const userId = profile.id;
-    const response = await fetch(`http://localhost:3000/user/${userId}`, {
-      method: "DELETE",
-    })
-      .then((response) => {
-        if (response.ok) {
-          localStorage.removeItem("access_token");
-          localStorage.removeItem("user");
-          toast.success("User Deleted Successfully");
-          console.log("User Deleted Successfully");
-          navigate("/");
-        }
-      })
-      .catch((err) => console.log(err));
-
-    console.log(response);
+    try {
+      await axios.delete(`http://localhost:3000/user/${userId}`);
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("user");
+      toast.success("User Deleted Successfully");
+      console.log("User Deleted Successfully");
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
   };
-
-  const updateProfile = async () => {
-    navigate("/update");
-  };
-
   useEffect(() => {
     const fetchingProfile = async () => {
       setProfile(JSON.parse(localStorage.getItem("user")));
 
       setGotData(true);
-      // const user = axios.get("http://localhost:3000/auth/profile", config);
     };
     fetchingProfile();
-    console.log("UseEffect Profile: ", profile);
-    console.log("Use Effect gotData: ", gotData);
   }, []);
-
-  console.log("profile: ", profile);
-  console.log("gotData: ", gotData);
 
   return (
     <ProfileContainer>
@@ -94,7 +80,7 @@ const Profile = () => {
                 border: "none",
               }}
               label="Update"
-              func={updateProfile}
+              func={() => navigate("/update")}
             />
             <Button
               styles={{

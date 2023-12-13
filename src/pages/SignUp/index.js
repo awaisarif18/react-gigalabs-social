@@ -10,42 +10,50 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/base/Button";
 import axios from "axios";
-import { hashPassword } from "../../components/base/Util";
 
 const SignUp = () => {
-  const [username, setUsername] = useState("");
-  const [nickname, setNickname] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [departments, setDepartments] = useState([]);
   const [roles, setRoles] = useState([]);
   const [selectedDepartment, setSelectedDepartment] = useState(1);
   const [selectedRole, setSelectedRole] = useState(1);
-
+  const [currentUser, setCurrentUser] = useState({
+    username: "",
+    nickname: "",
+    email: "",
+    password: "",
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchRolesAndDepartments = async () => {
       try {
-        const rolesResponse = await fetch("http://localhost:3000/role");
-        const departmentsResponse = await fetch(
-          "http://localhost:3000/department"
-        );
+        await axios
+          .get("http://localhost:3000/role")
+          .then((response) => {
+            const rolesData = response.data;
+            const filteredRoles = rolesData.filter(
+              (role) => role.name !== "admin"
+            );
 
-        if (rolesResponse.ok && departmentsResponse.ok) {
-          const rolesData = await rolesResponse.json();
-          const departmentsData = await departmentsResponse.json();
+            setRoles(filteredRoles);
+          })
+          .catch((error) => {
+            toast.error("Failed to fetch Roles", error);
+            console.error("Unable to fetch Roles", error);
+          });
 
-          const filteredRoles = rolesData.filter(
-            (role) => role.name !== "admin"
-          );
-
-          setRoles(filteredRoles);
-          setDepartments(departmentsData);
-        } else {
-          toast.error("Failed to fetch roles and departments");
-        }
+        await axios
+          .get("http://localhost:3000/department")
+          .then(async (response) => {
+            const departmentsData = response.data;
+            setDepartments(departmentsData);
+          })
+          .catch((error) => {
+            toast.error("Failed to fetch Departments", error);
+            console.error("Unable to fetch Departments", error);
+          });
       } catch (error) {
+        console.error("Failed: ", error);
         toast.error(`Failed: ${error.message}`);
       }
     };
@@ -55,9 +63,7 @@ const SignUp = () => {
 
   const SignUpHandler = async (e) => {
     e.preventDefault();
-
-    // const hashedPassword = await hashPassword(password);
-    // console.log("Hashed Password:", hashedPassword);
+    const { username, email, password, nickname } = currentUser;
 
     const signUpObj = {
       username,
@@ -67,8 +73,6 @@ const SignUp = () => {
       Department: selectedDepartment,
       Role: selectedRole,
     };
-
-    console.log("Sign Up Object:", signUpObj);
 
     try {
       const response = await axios.post(
@@ -113,8 +117,13 @@ const SignUp = () => {
             minLength="3"
             maxLength="30"
             placeholder="Name"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={currentUser.username}
+            onChange={(e) =>
+              setCurrentUser((prev) => ({
+                ...prev,
+                username: e.target.value,
+              }))
+            }
           />
           <input
             required
@@ -122,8 +131,13 @@ const SignUp = () => {
             minLength="7"
             maxLength="30"
             placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={currentUser.email}
+            onChange={(e) =>
+              setCurrentUser((prev) => ({
+                ...prev,
+                email: e.target.value,
+              }))
+            }
           />
           <input
             required
@@ -131,8 +145,13 @@ const SignUp = () => {
             minLength="7"
             maxLength="30"
             placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={currentUser.password}
+            onChange={(e) =>
+              setCurrentUser((prev) => ({
+                ...prev,
+                password: e.target.value,
+              }))
+            }
           />
           <input
             required
@@ -140,8 +159,13 @@ const SignUp = () => {
             minLength="4"
             maxLength="30"
             placeholder="Nickname"
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
+            value={currentUser.nickname}
+            onChange={(e) =>
+              setCurrentUser((prev) => ({
+                ...prev,
+                nickname: e.target.value,
+              }))
+            }
           />
 
           <select

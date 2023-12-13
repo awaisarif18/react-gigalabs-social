@@ -18,51 +18,56 @@ const UpdateUser = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [username, setUsername] = useState("");
-  const [nickname, setNickname] = useState("");
-  const [email, setEmail] = useState("");
   const [departments, setDepartments] = useState([]);
   const [roles, setRoles] = useState([]);
-  const [profile, setProfile] = useState({});
   const [selectedDepartment, setSelectedDepartment] = useState(1);
   const [selectedRole, setSelectedRole] = useState(1);
   const [gotData, setGotData] = useState(false);
+  const [currentUser, setCurrentUser] = useState({});
 
   useEffect(() => {
     const fetchingProfile = () => {
-      setProfile(JSON.parse(localStorage.getItem("user")));
-      setUsername(JSON.parse(localStorage.getItem("user")).username);
-      setNickname(JSON.parse(localStorage.getItem("user")).nickname);
-      setEmail(JSON.parse(localStorage.getItem("user")).email);
-      setSelectedDepartment(
-        JSON.parse(localStorage.getItem("user")).Department.id
+      const { Department, Role, ...user } = JSON.parse(
+        localStorage.getItem("user")
       );
-      setSelectedRole(JSON.parse(localStorage.getItem("user")).Role.id);
+      console.log("Department", Department);
+      setCurrentUser(user);
+      setSelectedDepartment(Department.id);
+      setSelectedRole(Role.id);
       setGotData(true);
     };
 
     const fetchRolesAndDepartments = async () => {
       try {
-        const rolesResponse = await fetch("http://localhost:3000/role");
-        const departmentsResponse = await fetch(
-          "http://localhost:3000/department"
-        );
+        await axios
+          .get("http://localhost:3000/role")
+          .then((response) => {
+            const rolesData = response.data;
+            const filteredRoles = rolesData.filter(
+              (role) => role.name !== "admin"
+            );
 
-        if (rolesResponse.ok && departmentsResponse.ok) {
-          const rolesData = await rolesResponse.json();
-          const departmentsData = await departmentsResponse.json();
+            setRoles(filteredRoles);
+          })
+          .catch((error) => {
+            toast.error("Failed to fetch Roles", error);
+            console.error("Unable to fetch Roles", error);
+          });
 
-          const filteredRoles = rolesData.filter(
-            (role) => role.name !== "admin"
-          );
+        await axios
+          .get("http://localhost:3000/department")
+          .then(async (response) => {
+            const departmentsData = response.data;
+            setDepartments(departmentsData);
+          })
+          .catch((error) => {
+            toast.error("Failed to fetch Departments", error);
+            console.error("Unable to fetch Departments", error);
+          });
 
-          setRoles(filteredRoles);
-          setDepartments(departmentsData);
-          fetchingProfile();
-        } else {
-          toast.error("Failed to fetch roles and departments");
-        }
+        fetchingProfile();
       } catch (error) {
+        console.error("Failed: ", error);
         toast.error(`Failed: ${error.message}`);
       }
     };
@@ -73,32 +78,34 @@ const UpdateUser = () => {
   const UpdateHandler = async (e) => {
     e.preventDefault();
 
-    const signUpObj = {
+    const { id, username, email, nickname } = currentUser;
+    const updateObj = {
       username,
       email,
       nickname,
-      Department: selectedDepartment,
-      Role: selectedRole,
+      Department: +selectedDepartment,
+      Role: +selectedRole,
     };
 
+    console.log("updateObj", updateObj);
+
     await axios
-      .patch(`http://localhost:3000/user/${profile.id}`, signUpObj)
+      .patch(`http://localhost:3000/user/${id}`, updateObj)
       .then((res) => {
         console.log(res);
-        localStorage.setItem("user", JSON.stringify(res.data));
+        // localStorage.setItem("user", JSON.stringify(res.data));
         localStorage.removeItem("access_token");
         localStorage.removeItem("user");
 
         dispatch(logout());
-        navigate("/");
+        navigate("/login");
         toast.success("User updated successfully");
       })
       .catch((err) => {
         toast.error(err.message);
         console.log(err);
       });
-
-    console.log(signUpObj);
+    console.log("currentUser", currentUser.username);
   };
 
   return (
@@ -106,7 +113,7 @@ const UpdateUser = () => {
       {gotData && (
         <>
           <UpdateHeader>
-            <Heading content={`Edit ${profile.username} Profile`} />
+            <Heading content={`Edit ${currentUser?.username} Profile`} />
           </UpdateHeader>
           <UpdateForm onSubmit={UpdateHandler}>
             <StyledInput>
@@ -115,16 +122,26 @@ const UpdateUser = () => {
                 minLength="3"
                 maxLength="30"
                 placeholder="Name"
-                onChange={(e) => setUsername(e.target.value)}
-                value={username}
+                onChange={(e) =>
+                  setCurrentUser((prev) => ({
+                    ...prev,
+                    username: e.target.value,
+                  }))
+                }
+                value={currentUser.username}
               />
               <input
                 type="email"
                 minLength="7"
                 maxLength="30"
                 placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={currentUser.email}
+                onChange={(e) =>
+                  setCurrentUser((prev) => ({
+                    ...prev,
+                    email: e.target.value,
+                  }))
+                }
               />
 
               <input
@@ -132,8 +149,13 @@ const UpdateUser = () => {
                 minLength="4"
                 maxLength="30"
                 placeholder="Nickname"
-                value={nickname}
-                onChange={(e) => setNickname(e.target.value)}
+                value={currentUser.nickname}
+                onChange={(e) =>
+                  setCurrentUser((prev) => ({
+                    ...prev,
+                    nickname: e.target.value,
+                  }))
+                }
               />
 
               <select
