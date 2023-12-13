@@ -46,6 +46,7 @@ export const Description = styled(motion.div)`
 export const WebAnimation = styled(motion.div)`
   height: 100vh;
   width: 45vw;
+  overflow: hidden;
 
   @media screen and (max-width: 768px) {
     width: 90vw;

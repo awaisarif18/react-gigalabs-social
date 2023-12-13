@@ -13,7 +13,7 @@ const DynamicNav = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  console.log("isLogged", isLogged);
+  // console.log("isLogged", isLogged);
 
   const logoutHandler = () => {
     const token = localStorage.getItem("access_token");

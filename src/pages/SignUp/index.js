@@ -45,8 +45,7 @@ const SignUp = () => {
         await axios
           .get("http://localhost:3000/department")
           .then(async (response) => {
-            const departmentsData = response.data;
-            setDepartments(departmentsData);
+            setDepartments(response.data);
           })
           .catch((error) => {
             toast.error("Failed to fetch Departments", error);
@@ -82,7 +81,7 @@ const SignUp = () => {
 
       if (response.status === 201) {
         console.log("success");
-        console.log(signUpObj);
+        // console.log(signUpObj);
         navigate("/login");
         toast.success("Registered Successfully!", {
           position: toast.POSITION.TOP_RIGHT,

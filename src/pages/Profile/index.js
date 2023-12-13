@@ -17,15 +17,6 @@ const Profile = () => {
   const [gotData, setGotData] = useState(false);
   const navigate = useNavigate();
 
-  // const token = localStorage.getItem("access_token");
-
-  // const config = {
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //     Authorization: `Bearer ${token}`,
-  //   },
-  // };
-
   const deleteProfile = async () => {
     const userId = profile.id;
     try {

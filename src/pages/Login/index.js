@@ -16,18 +16,16 @@ const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
 
   const loginUser = async (credentials) => {
-    console.log("Login Credentials:", { username, password });
-
+    // console.log("Login Credentials:", { username, password });
     try {
       const response = await axios.post(
         "http://localhost:3000/auth/login",
         credentials
       );
-      console.log("Response Data", response.data);
+      // console.log("Response Data", response.data);
       return response.data;
     } catch (error) {
       console.error("Error: ", error);
@@ -66,6 +64,7 @@ const Login = () => {
         <Icons />
         <p>OR</p>
         <input
+          required
           type="text"
           minLength="3"
           maxLength="30"
@@ -74,6 +73,7 @@ const Login = () => {
           onChange={(e) => setUsername(e.target.value)}
         />
         <input
+          required
           type="password"
           minLength="7"
           maxLength="30"

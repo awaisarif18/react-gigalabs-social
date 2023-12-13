@@ -30,7 +30,7 @@ const UpdateUser = () => {
       const { Department, Role, ...user } = JSON.parse(
         localStorage.getItem("user")
       );
-      console.log("Department", Department);
+      // console.log("Department", Department);
       setCurrentUser(user);
       setSelectedDepartment(Department.id);
       setSelectedRole(Role.id);
@@ -92,7 +92,7 @@ const UpdateUser = () => {
     await axios
       .patch(`http://localhost:3000/user/${id}`, updateObj)
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         // localStorage.setItem("user", JSON.stringify(res.data));
         localStorage.removeItem("access_token");
         localStorage.removeItem("user");
@@ -105,7 +105,7 @@ const UpdateUser = () => {
         toast.error(err.message);
         console.log(err);
       });
-    console.log("currentUser", currentUser.username);
+    // console.log("currentUser", currentUser.username);
   };
 
   return (

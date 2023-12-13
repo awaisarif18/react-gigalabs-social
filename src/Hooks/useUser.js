@@ -9,7 +9,8 @@ const useUser = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     if (token) {
-      console.log(token);
+      // console.log(token);
+      console.log("logged in");
       dispatch(login());
     } else {
       dispatch(logout());

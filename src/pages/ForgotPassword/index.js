@@ -23,7 +23,10 @@ const ForgotPassword = () => {
     console.log(updateObj);
 
     await axios
-      .patch(`http://localhost:3000/user/changePassword/${username}`, updateObj)
+      .patch(
+        `http://localhost:3000/user/change-password/${username}`,
+        updateObj
+      )
       .then((res) => {
         console.log(res);
         console.log(res.data);

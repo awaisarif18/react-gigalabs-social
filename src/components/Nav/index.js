@@ -1,23 +1,9 @@
-import React, { useContext } from "react";
+import React from "react";
 import { StyledNav } from "./styles";
 import { Link } from "react-router-dom";
 import logo from "../../assets/images/logo.webp";
-import Button from "../base/Button";
 import { paths } from "../../constants/paths";
-import { toast } from "react-toastify";
 import DynamicNav from "../dynamic nav";
-
-// const logoutHandler = () => {
-//   const token = localStorage.getItem("access_token");
-//   if (token) {
-//     console.log(token);
-//     localStorage.removeItem("access_token");
-//     console.log("Success");
-//     toast.success("Logout Successful");
-//   } else {
-//     toast.error("User needs to login");
-//   }
-// };
 
 const NavBar = () => {
   return (
@@ -34,46 +20,6 @@ const NavBar = () => {
         </li>
       </ul>
       <DynamicNav />
-      {/* <div>
-        <Link to={paths.SignUp}>
-          <Button
-            label="Register"
-            type="submit"
-            styles={{
-              width: "100px",
-              textDecoration: "none",
-              padding: "1rem",
-              marginRight: "20px",
-              border: "none",
-            }}
-          />
-        </Link>
-        <Link to={paths.login}>
-          <Button
-            label="Login"
-            type="submit"
-            styles={{
-              width: "100px",
-              textDecoration: "none",
-              padding: "1rem",
-              marginRight: "20px",
-              border: "none",
-            }}
-          />
-        </Link>
-
-        <Button
-          func={logoutHandler}
-          label="Logout"
-          styles={{
-            width: "100px",
-            textDecoration: "none",
-            padding: "1rem",
-            marginRight: "20px",
-            border: "none",
-          }}
-        />
-      </div> */}
     </StyledNav>
   );
 };

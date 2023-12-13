@@ -24,7 +24,7 @@ const ContactUs = () => {
         navigate("/employees");
         toast.success("Message Sent Successfully");
         console.log("Message Sent Successfully");
-        console.log(res);
+        // console.log(res);
       })
       .catch((err) => {
         toast.error("Message Failed" + err);
@@ -49,6 +49,7 @@ const ContactUs = () => {
         <h1>Get in touch with us!</h1>
         <StyledForm onSubmit={formHandler}>
           <input
+            required
             minLength="3"
             maxLength="30"
             type="email"
@@ -57,6 +58,7 @@ const ContactUs = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
           <input
+            required
             type="text"
             minLength="3"
             maxLength="30"
@@ -65,6 +67,7 @@ const ContactUs = () => {
             onChange={(e) => setSubject(e.target.value)}
           />
           <input
+            required
             minLength="3"
             maxLength="250"
             type="text"
