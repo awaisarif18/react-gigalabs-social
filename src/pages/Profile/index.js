@@ -20,7 +20,9 @@ const Profile = () => {
   const deleteProfile = async () => {
     const userId = profile.id;
     try {
-      await axios.delete(`http://localhost:3000/user/${userId}`);
+      await axios.delete(
+        `https://nestjs-user-crud-pd0syti3k-awaisarif18.vercel.app/${userId}`
+      );
       localStorage.removeItem("access_token");
       localStorage.removeItem("user");
       toast.success("User Deleted Successfully");

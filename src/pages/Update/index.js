@@ -90,7 +90,10 @@ const UpdateUser = () => {
     console.log("updateObj", updateObj);
 
     await axios
-      .patch(`http://localhost:3000/user/${id}`, updateObj)
+      .patch(
+        `https://nestjs-user-crud-pd0syti3k-awaisarif18.vercel.app/user/${id}`,
+        updateObj
+      )
       .then((res) => {
         // console.log(res);
         // localStorage.setItem("user", JSON.stringify(res.data));
