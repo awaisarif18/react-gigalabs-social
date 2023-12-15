@@ -22,7 +22,7 @@ const Login = () => {
     // console.log("Login Credentials:", { username, password });
     try {
       const response = await axios.post(
-        "https://nestjs-user-crud-pd0syti3k-awaisarif18.vercel.app/auth/login",
+        "https://nestjs-user-crud-awaisarif18.vercel.app/auth/login",
         credentials
       );
       // console.log("Response Data", response.data);

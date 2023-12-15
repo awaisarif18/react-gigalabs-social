@@ -91,7 +91,7 @@ const UpdateUser = () => {
 
     await axios
       .patch(
-        `https://nestjs-user-crud-pd0syti3k-awaisarif18.vercel.app/user/${id}`,
+        `https://nestjs-user-crud-awaisarif18.vercel.app/user/${id}`,
         updateObj
       )
       .then((res) => {
