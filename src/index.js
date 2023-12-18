@@ -15,7 +15,6 @@ import Profile from "./pages/Profile";
 import { Provider } from "react-redux";
 import { store } from "./state/store";
 import UpdateUser from "./pages/Update";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const router = createBrowserRouter([
   {
@@ -67,7 +66,6 @@ root.render(
     <Root>
       <RouterProvider router={router} />
       <ToastContainer />
-      <SpeedInsights />
     </Root>
   </Provider>
 );
