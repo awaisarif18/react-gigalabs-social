@@ -40,7 +40,7 @@ const UpdateUser = () => {
     const fetchRolesAndDepartments = async () => {
       try {
         await axios
-          .get("http://localhost:3000/role")
+          .get("https://nestjs-user-crud-awaisarif18.vercel.app/role")
           .then((response) => {
             const rolesData = response.data;
             const filteredRoles = rolesData.filter(
@@ -55,7 +55,7 @@ const UpdateUser = () => {
           });
 
         await axios
-          .get("http://localhost:3000/department")
+          .get("https://nestjs-user-crud-awaisarif18.vercel.app/department")
           .then(async (response) => {
             const departmentsData = response.data;
             setDepartments(departmentsData);
