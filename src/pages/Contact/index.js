@@ -19,7 +19,7 @@ const ContactUs = () => {
     console.log("------------", formObj);
 
     await axios
-      .post("http://localhost:3000/contact", formObj)
+      .post("https://nestjs-user-crud-awaisarif18.vercel.app/contact", formObj)
       .then((res) => {
         navigate("/employees");
         toast.success("Message Sent Successfully");
