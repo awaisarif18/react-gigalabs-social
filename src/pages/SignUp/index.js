@@ -69,8 +69,8 @@ const SignUp = () => {
       email,
       password,
       nickname,
-      Department: selectedDepartment,
-      Role: selectedRole,
+      Department: +selectedDepartment,
+      Role: +selectedRole,
     };
 
     try {
