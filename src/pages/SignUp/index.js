@@ -22,6 +22,8 @@ const SignUp = () => {
     email: "",
     password: "",
   });
+  const [gotData, setGotData] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,6 +48,7 @@ const SignUp = () => {
           .get("https://nestjs-user-crud-awaisarif18.vercel.app/department")
           .then(async (response) => {
             setDepartments(response.data);
+            setGotData(true);
           })
           .catch((error) => {
             toast.error("Failed to fetch Departments", error);
@@ -166,32 +169,35 @@ const SignUp = () => {
               }))
             }
           />
+          {gotData && (
+            <>
+              <select
+                name="Department"
+                id="dropdown"
+                value={selectedDepartment}
+                onChange={(e) => setSelectedDepartment(e.target.value)}
+              >
+                {departments.map((data, index) => (
+                  <option key={index} value={data.id}>
+                    {data.name}
+                  </option>
+                ))}
+              </select>
 
-          <select
-            name="Department"
-            id="dropdown"
-            value={selectedDepartment}
-            onChange={(e) => setSelectedDepartment(e.target.value)}
-          >
-            {departments.map((data, index) => (
-              <option key={index} value={data.id}>
-                {data.name}
-              </option>
-            ))}
-          </select>
-
-          <select
-            name="Role"
-            id="dropdown"
-            value={selectedRole}
-            onChange={(e) => setSelectedRole(e.target.value)}
-          >
-            {roles.map((data, index) => (
-              <option key={index} value={data.id}>
-                {data.name}
-              </option>
-            ))}
-          </select>
+              <select
+                name="Role"
+                id="dropdown"
+                value={selectedRole}
+                onChange={(e) => setSelectedRole(e.target.value)}
+              >
+                {roles.map((data, index) => (
+                  <option key={index} value={data.id}>
+                    {data.name}
+                  </option>
+                ))}
+              </select>
+            </>
+          )}
         </InputContainer>
 
         <Button
