@@ -10,7 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/base/Button";
 import axios from "axios";
-// import { useQuery } from "react-query";
+import { useQuery } from "react-query";
 // import { getDepartments } from "../../services/api";
 
 const SignUp = () => {
@@ -26,12 +26,19 @@ const SignUp = () => {
   });
   const navigate = useNavigate();
 
-  // const departmentQuery = useQuery({
-  //   queryKey: ["departments"],
-  //   queryFn: getDepartments,
-  // });
+  const departmentQuery = useQuery({
+    queryKey: ["departments"],
+    queryFn: () => {
+      return axios
+        .get("https://nestjs-user-crud-awaisarif18.vercel.app/department")
+        .then((response) => setDepartments(response.data))
+        .catch((error) => {
+          toast.error("Failed to fetch Departments", error);
+          console.log(error);
+        });
+    },
+  });
 
-  // setDepartments(departmentQuery.data);
   useEffect(() => {
     const fetchRolesAndDepartments = async () => {
       try {
@@ -50,15 +57,15 @@ const SignUp = () => {
             console.error("Unable to fetch Roles", error);
           });
 
-        await axios
-          .get("https://nestjs-user-crud-awaisarif18.vercel.app/department")
-          .then(async (response) => {
-            setDepartments(response.data);
-          })
-          .catch((error) => {
-            toast.error("Failed to fetch Departments", error);
-            console.error("Unable to fetch Departments", error);
-          });
+        // await axios
+        //   .get("https://nestjs-user-crud-awaisarif18.vercel.app/department")
+        //   .then(async (response) => {
+        //     setDepartments(response.data);
+        //   })
+        //   .catch((error) => {
+        //     toast.error("Failed to fetch Departments", error);
+        //     console.error("Unable to fetch Departments", error);
+        //   });
       } catch (error) {
         console.error("Failed: ", error);
         toast.error(`Failed: ${error.message}`);
