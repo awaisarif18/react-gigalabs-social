@@ -111,9 +111,9 @@ const SignUp = () => {
     }
   };
 
-  // if (departmentQuery.status === "loading") return <h1>Loading...</h1>;
-  // if (departmentQuery.status === "error")
-  //   return <h1>{JSON.stringify(departmentQuery.error)}</h1>;
+  if (departmentQuery.status === "loading") return <h1>Loading...</h1>;
+  if (departmentQuery.status === "error")
+    return <h1>{JSON.stringify(departmentQuery.error)}</h1>;
 
   return (
     <StyledSignUp>
