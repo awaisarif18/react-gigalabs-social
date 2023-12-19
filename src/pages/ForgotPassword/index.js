@@ -24,7 +24,7 @@ const ForgotPassword = () => {
 
     await axios
       .patch(
-        `https://nestjs-user-crud-awaisarif18.vercel.app/change-password/${username}`,
+        `https://nestjs-user-crud-awaisarif18.vercel.app/user/change-password/${username}`,
         updateObj
       )
       .then((res) => {
