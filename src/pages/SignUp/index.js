@@ -39,9 +39,12 @@ const SignUp = () => {
   useEffect(() => {
     const fetchRolesAndDepartments = async () => {
       try {
+        console.log(roleQuery.data);
         const rolesData = roleQuery.data;
+        console.log(rolesData);
         const filteredRoles = rolesData.filter((role) => role.name !== "admin");
         setRoles(filteredRoles);
+        console.log(filteredRoles);
 
         setDepartments(departmentQuery.data);
       } catch (error) {
