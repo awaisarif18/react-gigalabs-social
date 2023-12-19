@@ -10,6 +10,8 @@ import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/base/Button";
 import axios from "axios";
+import { useQuery } from "react-query";
+import { getDepartments, getRoles } from "../../services/api";
 
 const SignUp = () => {
   const [departments, setDepartments] = useState([]);
@@ -24,33 +26,24 @@ const SignUp = () => {
   });
   const navigate = useNavigate();
 
+  const roleQuery = useQuery({
+    queryKey: ["roles"],
+    queryFn: getRoles,
+  });
+
+  const departmentQuery = useQuery({
+    queryKey: ["departments"],
+    queryFn: getDepartments,
+  });
+
   useEffect(() => {
     const fetchRolesAndDepartments = async () => {
       try {
-        await axios
-          .get("https://nestjs-user-crud-awaisarif18.vercel.app/role")
-          .then((response) => {
-            const rolesData = response.data;
-            const filteredRoles = rolesData.filter(
-              (role) => role.name !== "admin"
-            );
+        const rolesData = roleQuery.data;
+        const filteredRoles = rolesData.filter((role) => role.name !== "admin");
+        setRoles(filteredRoles);
 
-            setRoles(filteredRoles);
-          })
-          .catch((error) => {
-            toast.error("Failed to fetch Roles", error);
-            console.error("Unable to fetch Roles", error);
-          });
-
-        await axios
-          .get("https://nestjs-user-crud-awaisarif18.vercel.app/department")
-          .then(async (response) => {
-            setDepartments(response.data);
-          })
-          .catch((error) => {
-            toast.error("Failed to fetch Departments", error);
-            console.error("Unable to fetch Departments", error);
-          });
+        setDepartments(departmentQuery.data);
       } catch (error) {
         console.error("Failed: ", error);
         toast.error(`Failed: ${error.message}`);
@@ -95,6 +88,10 @@ const SignUp = () => {
       toast.error("Failed to register");
     }
   };
+
+  if (roleQuery.isLoading || departmentQuery.isLoading)
+    return <div>Loading...</div>;
+  if (roleQuery.isError || departmentQuery.isError) return <div>Error</div>;
 
   return (
     <StyledSignUp>

@@ -16,6 +16,7 @@ import { Provider } from "react-redux";
 import { store } from "./state/store";
 import UpdateUser from "./pages/Update";
 import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
 
 const queryClient = new QueryClient();
 
@@ -70,6 +71,7 @@ root.render(
       <Root>
         <RouterProvider router={router} />
         <ToastContainer />
+        <ReactQueryDevtools initialIsOpen={false} />
       </Root>
     </Provider>
   </QueryClientProvider>
