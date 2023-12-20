@@ -64,47 +64,12 @@ const UpdateUser = () => {
       const { Department, Role, ...user } = JSON.parse(
         localStorage.getItem("user")
       );
-      // console.log("Department", Department);
       setCurrentUser(user);
       setSelectedDepartment(Department.id);
       setSelectedRole(Role.id);
       setGotData(true);
     };
 
-    // const fetchRolesAndDepartments = async () => {
-    //   try {
-    //     await axios
-    //       .get("https://nestjs-user-crud-awaisarif18.vercel.app/role")
-    //       .then((response) => {
-    //         const rolesData = response.data;
-    //         const filteredRoles = rolesData.filter(
-    //           (role) => role.name !== "admin"
-    //         );
-
-    //         setRoles(filteredRoles);
-    //       })
-    //       .catch((error) => {
-    //         toast.error("Failed to fetch Roles", error);
-    //         console.error("Unable to fetch Roles", error);
-    //       });
-
-    //     await axios
-    //       .get("https://nestjs-user-crud-awaisarif18.vercel.app/department")
-    //       .then(async (response) => {
-    //         const departmentsData = response.data;
-    //         setDepartments(departmentsData);
-    //       })
-    //       .catch((error) => {
-    //         toast.error("Failed to fetch Departments", error);
-    //         console.error("Unable to fetch Departments", error);
-    //       });
-    //   } catch (error) {
-    //     console.error("Failed: ", error);
-    //     toast.error(`Failed: ${error.message}`);
-    //   }
-    // };
-
-    // fetchRolesAndDepartments();
     fetchingProfile();
   }, []);
 
@@ -128,8 +93,6 @@ const UpdateUser = () => {
         updateObj
       )
       .then((res) => {
-        // console.log(res);
-        // localStorage.setItem("user", JSON.stringify(res.data));
         localStorage.removeItem("access_token");
         localStorage.removeItem("user");
 
@@ -141,7 +104,6 @@ const UpdateUser = () => {
         toast.error(err.message);
         console.log(err);
       });
-    // console.log("currentUser", currentUser.username);
   };
 
   if (departmentQuery.isLoading || roleQuery.isLoading)
