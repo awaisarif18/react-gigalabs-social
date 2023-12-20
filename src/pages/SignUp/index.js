@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../../components/base/Button";
 import axios from "axios";
 import { useQuery } from "react-query";
+import Heading from "../../components/base/Heading";
 // import { getDepartments } from "../../services/api";
 
 const SignUp = () => {
@@ -96,9 +97,9 @@ const SignUp = () => {
   };
 
   if (departmentQuery.isLoading || roleQuery.isLoading)
-    return <h1>Loading...</h1>;
+    return <Heading content="Loading..." />;
   if (departmentQuery.isError || roleQuery.isError)
-    return <h1>{JSON.stringify(departmentQuery.error)}</h1>;
+    return <Heading content="Something went wrong" />;
 
   return (
     <StyledSignUp>

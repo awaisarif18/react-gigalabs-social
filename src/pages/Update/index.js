@@ -107,9 +107,9 @@ const UpdateUser = () => {
   };
 
   if (departmentQuery.isLoading || roleQuery.isLoading)
-    return <h1>Loading...</h1>;
+    return <Heading content="Loading..." />;
   if (departmentQuery.isError || roleQuery.isError)
-    return <h1>{JSON.stringify(departmentQuery.error)}</h1>;
+    return <Heading content="Something went wrong" />;
 
   return (
     <UpdatePage>
