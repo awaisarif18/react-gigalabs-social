@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import SideLogIn from "../../components/SideLogin";
 import Icons from "../../components/Icons";
 import { StyledSignUp } from "./styles";
@@ -59,42 +59,6 @@ const SignUp = () => {
     },
   });
 
-  // useEffect(() => {
-  //   const fetchRolesAndDepartments = async () => {
-  //     try {
-  //       await axios
-  //         .get("https://nestjs-user-crud-awaisarif18.vercel.app/role")
-  //         .then((response) => {
-  //           const rolesData = response.data;
-  //           const filteredRoles = rolesData.filter(
-  //             (role) => role.name !== "admin"
-  //           );
-
-  //           setRoles(filteredRoles);
-  //         })
-  //         .catch((error) => {
-  //           toast.error("Failed to fetch Roles", error);
-  //           console.error("Unable to fetch Roles", error);
-  //         });
-
-  //       // await axios
-  //       //   .get("https://nestjs-user-crud-awaisarif18.vercel.app/department")
-  //       //   .then(async (response) => {
-  //       //     setDepartments(response.data);
-  //       //   })
-  //       //   .catch((error) => {
-  //       //     toast.error("Failed to fetch Departments", error);
-  //       //     console.error("Unable to fetch Departments", error);
-  //       //   });
-  //     } catch (error) {
-  //       console.error("Failed: ", error);
-  //       toast.error(`Failed: ${error.message}`);
-  //     }
-  //   };
-
-  //   fetchRolesAndDepartments();
-  // }, []);
-
   const SignUpHandler = async (e) => {
     e.preventDefault();
     const { username, email, password, nickname } = currentUser;
@@ -131,7 +95,7 @@ const SignUp = () => {
     }
   };
 
-  if (departmentQuery.isLoading && roleQuery.isLoading)
+  if (departmentQuery.isLoading || roleQuery.isLoading)
     return <h1>Loading...</h1>;
   if (departmentQuery.isError || roleQuery.isError)
     return <h1>{JSON.stringify(departmentQuery.error)}</h1>;

@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "../../state/loggedStatus/statusSlice";
 import Heading from "../../components/base/Heading";
+import { useQuery } from "react-query";
 
 const UpdateUser = () => {
   const navigate = useNavigate();
@@ -24,6 +25,39 @@ const UpdateUser = () => {
   const [selectedRole, setSelectedRole] = useState(1);
   const [gotData, setGotData] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
+
+  const departmentQuery = useQuery({
+    queryKey: ["departments"],
+    queryFn: () => {
+      return axios
+        .get("https://nestjs-user-crud-awaisarif18.vercel.app/department")
+        .then((response) => setDepartments(response.data))
+        .catch((error) => {
+          toast.error("Failed to fetch Departments", error);
+          console.log(error);
+        });
+    },
+  });
+
+  const roleQuery = useQuery({
+    queryKey: ["roles"],
+    queryFn: () => {
+      return axios
+        .get("https://nestjs-user-crud-awaisarif18.vercel.app/role")
+        .then((response) => {
+          const rolesData = response.data;
+          const filteredRoles = rolesData.filter(
+            (role) => role.name !== "admin"
+          );
+
+          setRoles(filteredRoles);
+        })
+        .catch((error) => {
+          toast.error("Failed to fetch Roles", error);
+          console.error("Unable to fetch Roles", error);
+        });
+    },
+  });
 
   useEffect(() => {
     const fetchingProfile = () => {
@@ -37,42 +71,41 @@ const UpdateUser = () => {
       setGotData(true);
     };
 
-    const fetchRolesAndDepartments = async () => {
-      try {
-        await axios
-          .get("https://nestjs-user-crud-awaisarif18.vercel.app/role")
-          .then((response) => {
-            const rolesData = response.data;
-            const filteredRoles = rolesData.filter(
-              (role) => role.name !== "admin"
-            );
+    // const fetchRolesAndDepartments = async () => {
+    //   try {
+    //     await axios
+    //       .get("https://nestjs-user-crud-awaisarif18.vercel.app/role")
+    //       .then((response) => {
+    //         const rolesData = response.data;
+    //         const filteredRoles = rolesData.filter(
+    //           (role) => role.name !== "admin"
+    //         );
 
-            setRoles(filteredRoles);
-          })
-          .catch((error) => {
-            toast.error("Failed to fetch Roles", error);
-            console.error("Unable to fetch Roles", error);
-          });
+    //         setRoles(filteredRoles);
+    //       })
+    //       .catch((error) => {
+    //         toast.error("Failed to fetch Roles", error);
+    //         console.error("Unable to fetch Roles", error);
+    //       });
 
-        await axios
-          .get("https://nestjs-user-crud-awaisarif18.vercel.app/department")
-          .then(async (response) => {
-            const departmentsData = response.data;
-            setDepartments(departmentsData);
-          })
-          .catch((error) => {
-            toast.error("Failed to fetch Departments", error);
-            console.error("Unable to fetch Departments", error);
-          });
+    //     await axios
+    //       .get("https://nestjs-user-crud-awaisarif18.vercel.app/department")
+    //       .then(async (response) => {
+    //         const departmentsData = response.data;
+    //         setDepartments(departmentsData);
+    //       })
+    //       .catch((error) => {
+    //         toast.error("Failed to fetch Departments", error);
+    //         console.error("Unable to fetch Departments", error);
+    //       });
+    //   } catch (error) {
+    //     console.error("Failed: ", error);
+    //     toast.error(`Failed: ${error.message}`);
+    //   }
+    // };
 
-        fetchingProfile();
-      } catch (error) {
-        console.error("Failed: ", error);
-        toast.error(`Failed: ${error.message}`);
-      }
-    };
-
-    fetchRolesAndDepartments();
+    // fetchRolesAndDepartments();
+    fetchingProfile();
   }, []);
 
   const UpdateHandler = async (e) => {
@@ -110,6 +143,11 @@ const UpdateUser = () => {
       });
     // console.log("currentUser", currentUser.username);
   };
+
+  if (departmentQuery.isLoading || roleQuery.isLoading)
+    return <h1>Loading...</h1>;
+  if (departmentQuery.isError || roleQuery.isError)
+    return <h1>{JSON.stringify(departmentQuery.error)}</h1>;
 
   return (
     <UpdatePage>
