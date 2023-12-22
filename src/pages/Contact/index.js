@@ -3,12 +3,13 @@ import { ContactContainer, StyledForm } from "./styles";
 import Button from "../../components/base/Button";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import axios from "axios";
+import { useContactFormMutation } from "../../services/contact";
 
 const ContactUs = () => {
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
+  const [contactForm] = useContactFormMutation();
 
   const navigate = useNavigate();
 
@@ -18,13 +19,11 @@ const ContactUs = () => {
     const formObj = { email, subject, message };
     console.log("------------", formObj);
 
-    await axios
-      .post("https://nestjs-user-crud-awaisarif18.vercel.app/contact", formObj)
-      .then((res) => {
+    contactForm(formObj)
+      .then(() => {
         navigate("/employees");
         toast.success("Message Sent Successfully");
         console.log("Message Sent Successfully");
-        // console.log(res);
       })
       .catch((err) => {
         toast.error("Message Failed" + err);

@@ -9,14 +9,16 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import Button from "../../components/base/Button";
-import axios from "axios";
-import { useQuery } from "react-query";
-import Heading from "../../components/base/Heading";
-// import { getDepartments } from "../../services/api";
+import { useGetDepartmentsQuery } from "../../services/departments";
+import { useGetRolesQuery } from "../../services/roles";
+import { useCreateUserMutation } from "../../services/register";
+import Loading from "../../components/base/Loading";
 
 const SignUp = () => {
-  const [departments, setDepartments] = useState([]);
-  const [roles, setRoles] = useState([]);
+  const { data: rtkDepartments, isFetching: isFetchingDepartments } =
+    useGetDepartmentsQuery();
+  const { data: rtkRoles, isFetching: isFetchingRoles } = useGetRolesQuery();
+
   const [selectedDepartment, setSelectedDepartment] = useState(1);
   const [selectedRole, setSelectedRole] = useState(1);
   const [currentUser, setCurrentUser] = useState({
@@ -26,39 +28,7 @@ const SignUp = () => {
     password: "",
   });
   const navigate = useNavigate();
-
-  const departmentQuery = useQuery({
-    queryKey: ["departments"],
-    queryFn: () => {
-      return axios
-        .get("https://nestjs-user-crud-awaisarif18.vercel.app/department")
-        .then((response) => setDepartments(response.data))
-        .catch((error) => {
-          toast.error("Failed to fetch Departments", error);
-          console.log(error);
-        });
-    },
-  });
-
-  const roleQuery = useQuery({
-    queryKey: ["roles"],
-    queryFn: () => {
-      return axios
-        .get("https://nestjs-user-crud-awaisarif18.vercel.app/role")
-        .then((response) => {
-          const rolesData = response.data;
-          const filteredRoles = rolesData.filter(
-            (role) => role.name !== "admin"
-          );
-
-          setRoles(filteredRoles);
-        })
-        .catch((error) => {
-          toast.error("Failed to fetch Roles", error);
-          console.error("Unable to fetch Roles", error);
-        });
-    },
-  });
+  const [createUser] = useCreateUserMutation();
 
   const SignUpHandler = async (e) => {
     e.preventDefault();
@@ -74,32 +44,21 @@ const SignUp = () => {
     };
 
     try {
-      const response = await axios.post(
-        "https://nestjs-user-crud-awaisarif18.vercel.app/user",
-        signUpObj
-      );
-
-      if (response.status === 201) {
-        console.log("success");
-        // console.log(signUpObj);
+      createUser(signUpObj).then(() => {
         navigate("/login");
         toast.success("Registered Successfully!", {
           position: toast.POSITION.TOP_RIGHT,
         });
-      } else {
-        console.log("Error:", response.data);
-        toast.error("Failed to register");
-      }
+      });
     } catch (error) {
       console.error("Error:", error.message);
       toast.error("Failed to register");
     }
   };
 
-  if (departmentQuery.isLoading || roleQuery.isLoading)
-    return <Heading content="Loading..." />;
-  if (departmentQuery.isError || roleQuery.isError)
-    return <Heading content="Something went wrong" />;
+  if (isFetchingDepartments && isFetchingRoles) {
+    return <Loading />;
+  }
 
   return (
     <StyledSignUp>
@@ -178,7 +137,7 @@ const SignUp = () => {
             value={selectedDepartment}
             onChange={(e) => setSelectedDepartment(e.target.value)}
           >
-            {departments.map((data, index) => (
+            {rtkDepartments?.map((data, index) => (
               <option key={index} value={data.id}>
                 {data.name}
               </option>
@@ -191,7 +150,7 @@ const SignUp = () => {
             value={selectedRole}
             onChange={(e) => setSelectedRole(e.target.value)}
           >
-            {roles.map((data, index) => (
+            {rtkRoles?.map((data, index) => (
               <option key={index} value={data.id}>
                 {data.name}
               </option>

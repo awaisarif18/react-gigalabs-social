@@ -9,7 +9,7 @@ const UpcomingEvents = () => {
     <StyledEventContainer>
       <Heading content="Our Upcoming Events" />
       <StyledEvents>
-        {upcomingData.map((data, index) => {
+        {upcomingData?.map((data, index) => {
           return (
             <UpcomingEventCard
               key={index}

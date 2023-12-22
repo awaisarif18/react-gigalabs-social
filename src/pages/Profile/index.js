@@ -10,36 +10,37 @@ import { useNavigate } from "react-router-dom";
 import Heading from "../../components/base/Heading";
 import Heading2 from "../../components/base/Heading2.js";
 import { toast } from "react-toastify";
-import axios from "axios";
+import { useDeleteUserMutation } from "../../services/delete.js";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "../../state/userData/userSlice.js";
 
 const Profile = () => {
   const [profile, setProfile] = useState({});
   const [gotData, setGotData] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [deleteUser] = useDeleteUserMutation();
+  const data = useSelector((state) => state.user);
 
-  const deleteProfile = async () => {
+  const deleteProfile = async (e) => {
+    e.preventDefault();
     const userId = profile.id;
-    try {
-      await axios.delete(
-        `https://nestjs-user-crud-awaisarif18.vercel.app/${userId}`
-      );
+
+    deleteUser({ userId }).then(() => {
       localStorage.removeItem("access_token");
-      localStorage.removeItem("user");
+      dispatch(setUser({}));
       toast.success("User Deleted Successfully");
       console.log("User Deleted Successfully");
       navigate("/");
-    } catch (error) {
-      console.log(error);
-    }
+    });
   };
   useEffect(() => {
     const fetchingProfile = async () => {
-      setProfile(JSON.parse(localStorage.getItem("user")));
-
+      setProfile(data);
       setGotData(true);
     };
     fetchingProfile();
-  }, []);
+  }, [data]);
 
   return (
     <ProfileContainer>
@@ -47,7 +48,7 @@ const Profile = () => {
         <Fragment>
           <StyledHeading>
             <Heading content="Profile" />
-            <Heading2 content={profile.username} />
+            <Heading2 content={profile?.username} />
           </StyledHeading>
           <StyledInfo>
             <div>
@@ -57,9 +58,9 @@ const Profile = () => {
             </div>
 
             <div>
-              <h3>{profile.email}</h3>
-              <h3>{profile.Department.name}</h3>
-              <h3>{profile.Role.name}</h3>
+              <h3>{profile?.email}</h3>
+              <h3>{profile?.Department.name}</h3>
+              <h3>{profile?.Role.name}</h3>
             </div>
           </StyledInfo>
 

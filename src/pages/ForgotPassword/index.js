@@ -3,13 +3,14 @@ import { ForgotContainer } from "./styles";
 import { remember } from "../../constants";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useChangePasswordMutation } from "../../services/changePassword";
 
 const ForgotPassword = () => {
   const [username, setUsername] = useState("");
   const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const [changePassword] = useChangePasswordMutation();
 
   const updateObj = {
     username,
@@ -20,17 +21,8 @@ const ForgotPassword = () => {
   const newPasswordHandler = async (e) => {
     e.preventDefault();
 
-    console.log(updateObj);
-
-    await axios
-      .patch(
-        `https://nestjs-user-crud-awaisarif18.vercel.app/user/change-password/${username}`,
-        updateObj
-      )
-      .then((res) => {
-        console.log(res);
-        console.log(res.data);
-        console.log(updateObj);
+    changePassword({ username, updateObj })
+      .then(() => {
         navigate("/");
         toast.success("Password updated successfully");
       })

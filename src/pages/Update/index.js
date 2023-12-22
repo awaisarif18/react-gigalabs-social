@@ -8,62 +8,34 @@ import {
 } from "./style";
 import { toast } from "react-toastify";
 import Button from "../../components/base/Button";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../../state/loggedStatus/statusSlice";
 import Heading from "../../components/base/Heading";
-import { useQuery } from "react-query";
+import { useGetDepartmentsQuery } from "../../services/departments";
+import { useGetRolesQuery } from "../../services/roles";
+import Loading from "../../components/base/Loading";
+import { useUpdateUserMutation } from "../../services/update";
+import { setUser } from "../../state/userData/userSlice";
 
 const UpdateUser = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [departments, setDepartments] = useState([]);
-  const [roles, setRoles] = useState([]);
   const [selectedDepartment, setSelectedDepartment] = useState(1);
   const [selectedRole, setSelectedRole] = useState(1);
   const [gotData, setGotData] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
+  const [updateUser] = useUpdateUserMutation();
 
-  const departmentQuery = useQuery({
-    queryKey: ["departments"],
-    queryFn: () => {
-      return axios
-        .get("https://nestjs-user-crud-awaisarif18.vercel.app/department")
-        .then((response) => setDepartments(response.data))
-        .catch((error) => {
-          toast.error("Failed to fetch Departments", error);
-          console.log(error);
-        });
-    },
-  });
-
-  const roleQuery = useQuery({
-    queryKey: ["roles"],
-    queryFn: () => {
-      return axios
-        .get("https://nestjs-user-crud-awaisarif18.vercel.app/role")
-        .then((response) => {
-          const rolesData = response.data;
-          const filteredRoles = rolesData.filter(
-            (role) => role.name !== "admin"
-          );
-
-          setRoles(filteredRoles);
-        })
-        .catch((error) => {
-          toast.error("Failed to fetch Roles", error);
-          console.error("Unable to fetch Roles", error);
-        });
-    },
-  });
+  const { data: rtkDepartments, isFetching: isFetchingDepartments } =
+    useGetDepartmentsQuery();
+  const { data: rtkRoles, isFetching: isFetchingRoles } = useGetRolesQuery();
+  const userData = useSelector((state) => state.user);
 
   useEffect(() => {
     const fetchingProfile = () => {
-      const { Department, Role, ...user } = JSON.parse(
-        localStorage.getItem("user")
-      );
+      const { Department, Role, ...user } = userData;
       setCurrentUser(user);
       setSelectedDepartment(Department.id);
       setSelectedRole(Role.id);
@@ -71,7 +43,7 @@ const UpdateUser = () => {
     };
 
     fetchingProfile();
-  }, []);
+  }, [userData]);
 
   const UpdateHandler = async (e) => {
     e.preventDefault();
@@ -85,17 +57,10 @@ const UpdateUser = () => {
       Role: +selectedRole,
     };
 
-    console.log("updateObj", updateObj);
-
-    await axios
-      .patch(
-        `https://nestjs-user-crud-awaisarif18.vercel.app/user/${id}`,
-        updateObj
-      )
-      .then((res) => {
+    updateUser({ updateObj, id })
+      .then((originalPromiseResult) => {
         localStorage.removeItem("access_token");
-        localStorage.removeItem("user");
-
+        dispatch(setUser({}));
         dispatch(logout());
         navigate("/login");
         toast.success("User updated successfully");
@@ -106,10 +71,9 @@ const UpdateUser = () => {
       });
   };
 
-  if (departmentQuery.isLoading || roleQuery.isLoading)
-    return <Heading content="Loading..." />;
-  if (departmentQuery.isError || roleQuery.isError)
-    return <Heading content="Something went wrong" />;
+  if (isFetchingDepartments && isFetchingRoles) {
+    return <Loading />;
+  }
 
   return (
     <UpdatePage>
@@ -131,14 +95,14 @@ const UpdateUser = () => {
                     username: e.target.value,
                   }))
                 }
-                value={currentUser.username}
+                value={currentUser?.username}
               />
               <input
                 type="email"
                 minLength="7"
                 maxLength="30"
                 placeholder="Email"
-                value={currentUser.email}
+                value={currentUser?.email}
                 onChange={(e) =>
                   setCurrentUser((prev) => ({
                     ...prev,
@@ -152,7 +116,7 @@ const UpdateUser = () => {
                 minLength="4"
                 maxLength="30"
                 placeholder="Nickname"
-                value={currentUser.nickname}
+                value={currentUser?.nickname}
                 onChange={(e) =>
                   setCurrentUser((prev) => ({
                     ...prev,
@@ -167,7 +131,7 @@ const UpdateUser = () => {
                 value={selectedDepartment}
                 onChange={(e) => setSelectedDepartment(e.target.value)}
               >
-                {departments.map((data, index) => (
+                {rtkDepartments?.map((data, index) => (
                   <option key={index} value={data.id}>
                     {data.name}
                   </option>
@@ -180,7 +144,7 @@ const UpdateUser = () => {
                 value={selectedRole}
                 onChange={(e) => setSelectedRole(e.target.value)}
               >
-                {roles.map((data, index) => (
+                {rtkRoles?.map((data, index) => (
                   <option key={index} value={data.id}>
                     {data.name}
                   </option>

@@ -32,13 +32,13 @@ const OneEmployee = () => {
               initial="hidden"
               animate="show"
             >
-              <p>"{employeeData.description}"</p>
+              <p>"{employeeData?.description}"</p>
             </motion.div>
           </CoverImage>
-          <ContentContainer color={employeeData.color}>
+          <ContentContainer color={employeeData?.color}>
             <EmployeeRole>
-              <Heading2 content={employeeData.name} />
-              <h3>{employeeData.role}</h3>
+              <Heading2 content={employeeData?.name} />
+              <h3>{employeeData?.role}</h3>
             </EmployeeRole>
 
             <ProfileImages
@@ -47,19 +47,19 @@ const OneEmployee = () => {
               whileInView="show"
             >
               <div className="image">
-                <img src={employeeData.pImg1} alt="Employee IMG 01" />
+                <img src={employeeData?.pImg1} alt="Employee IMG 01" />
               </div>
               <div className="image">
-                <img src={employeeData.pImg2} alt="Employee IMG 02" />
+                <img src={employeeData?.pImg2} alt="Employee IMG 02" />
               </div>
               <div className="image">
-                <img src={employeeData.pImg3} alt="Employee IMG 03" />
+                <img src={employeeData?.pImg3} alt="Employee IMG 03" />
               </div>
             </ProfileImages>
 
             <Technologies>
               <Heading2 content="Skills" />
-              <h4>{employeeData.technologies}</h4>
+              <h4>{employeeData?.technologies}</h4>
             </Technologies>
           </ContentContainer>
         </motion.div>

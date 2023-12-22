@@ -12,7 +12,7 @@ const Employees = () => {
       animate="show"
       exit="exit"
     >
-      {EmployeesDetails.map((data, index) => {
+      {EmployeesDetails?.map((data, index) => {
         return (
           <EmployeeCard
             key={index}

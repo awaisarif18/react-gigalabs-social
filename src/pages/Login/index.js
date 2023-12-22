@@ -10,49 +10,41 @@ import Button from "../../components/base/Button";
 import { paths } from "../../constants/paths";
 import { useDispatch } from "react-redux";
 import { login } from "../../state/loggedStatus/statusSlice";
-import axios from "axios";
+import { useAuthenticateUserMutation } from "../../services/login";
+import { setUser } from "../../state/userData/userSlice";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [authenticateUser] = useAuthenticateUserMutation();
 
   const loginUser = async (credentials) => {
-    // console.log("Login Credentials:", { username, password });
     try {
-      const response = await axios.post(
-        "https://nestjs-user-crud-awaisarif18.vercel.app/auth/login",
-        credentials
-      );
-      // console.log("Response Data", response.data);
-      return response.data;
+      authenticateUser(credentials).then((originalPromiseResult) => {
+        localStorage.setItem(
+          "access_token",
+          originalPromiseResult.data.access_token
+        );
+
+        dispatch(setUser(originalPromiseResult.data.user));
+
+        dispatch(login());
+        navigate("/");
+      });
     } catch (error) {
       console.error("Error: ", error);
+      toast.error("Incorrect Username or Password");
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const response = await loginUser({
+    await loginUser({
       username,
       password,
     });
-
-    if (response && "access_token" in response) {
-      try {
-        toast.success("Login Successful");
-        localStorage.setItem("user", JSON.stringify(response["user"]));
-        localStorage.setItem("access_token", response["access_token"]);
-        dispatch(login());
-        navigate("/");
-      } catch (error) {
-        console.log(error);
-        toast.error("Login Failed", error);
-      }
-    } else {
-      toast.error("Incorrect Username or Password");
-    }
   };
 
   return (
@@ -84,6 +76,7 @@ const Login = () => {
         <Link to={paths.ChangePassword}>
           <ForgotP>Forgot Password?</ForgotP>
         </Link>
+
         <Button
           label="Sign In"
           type="submit"
