@@ -14,11 +14,7 @@ import { Root } from "./styles/style";
 import Profile from "./pages/Profile";
 import { Provider } from "react-redux";
 import { store } from "./state/store";
-import UpdateUser from "./pages/Update";
-import { QueryClient, QueryClientProvider } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
-
-const queryClient = new QueryClient();
+import UpdateUser from "./pages/UpdateUser";
 
 const router = createBrowserRouter([
   {
@@ -66,13 +62,10 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 root.render(
-  <QueryClientProvider client={queryClient}>
-    <Provider store={store}>
-      <Root>
-        <RouterProvider router={router} />
-        <ToastContainer />
-        <ReactQueryDevtools initialIsOpen={false} />
-      </Root>
-    </Provider>
-  </QueryClientProvider>
+  <Provider store={store}>
+    <Root>
+      <RouterProvider router={router} />
+      <ToastContainer />
+    </Root>
+  </Provider>
 );

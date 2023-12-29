@@ -60,7 +60,7 @@ const Carousel = () => {
       onMouseLeave={() => setAutoPlay(true)}
     >
       <CarouselWrapper>
-        {floors.map((image, index) => {
+        {floors?.map((image, index) => {
           return (
             <div
               key={index}
@@ -94,7 +94,7 @@ const Carousel = () => {
         />
 
         <CarouselPagination>
-          {floors.map((_, index) => {
+          {floors?.map((_, index) => {
             return (
               <div
                 key={index}

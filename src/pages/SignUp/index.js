@@ -43,17 +43,12 @@ const SignUp = () => {
       Role: +selectedRole,
     };
 
-    try {
-      createUser(signUpObj).then(() => {
-        navigate("/login");
-        toast.success("Registered Successfully!", {
-          position: toast.POSITION.TOP_RIGHT,
-        });
+    createUser(signUpObj).then(() => {
+      navigate("/login");
+      toast.success("Registered Successfully!", {
+        position: toast.POSITION.TOP_RIGHT,
       });
-    } catch (error) {
-      console.error("Error:", error.message);
-      toast.error("Failed to register");
-    }
+    });
   };
 
   if (isFetchingDepartments && isFetchingRoles) {

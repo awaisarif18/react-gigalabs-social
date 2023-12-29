@@ -21,8 +21,8 @@ const Login = () => {
   const [authenticateUser] = useAuthenticateUserMutation();
 
   const loginUser = async (credentials) => {
-    try {
-      authenticateUser(credentials).then((originalPromiseResult) => {
+    authenticateUser(credentials)
+      .then((originalPromiseResult) => {
         localStorage.setItem(
           "access_token",
           originalPromiseResult.data.access_token
@@ -32,11 +32,11 @@ const Login = () => {
 
         dispatch(login());
         navigate("/");
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+        toast.error("Incorrect Username or Password");
       });
-    } catch (error) {
-      console.error("Error: ", error);
-      toast.error("Incorrect Username or Password");
-    }
   };
 
   const handleSubmit = async (e) => {

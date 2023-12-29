@@ -15,7 +15,6 @@ const rawBaseQuery = (baseUrl) =>
   });
 
 const baseQuery = async (args, api, extraOptions) => {
-  console.log("hereeee im rtk");
   const baseUrl = "https://nestjs-user-crud-awaisarif18.vercel.app/";
   if (!baseUrl) {
     return {

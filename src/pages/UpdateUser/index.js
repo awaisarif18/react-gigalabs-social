@@ -26,8 +26,8 @@ const UpdateUser = () => {
   const [selectedRole, setSelectedRole] = useState(1);
   const [gotData, setGotData] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
-  const [updateUser] = useUpdateUserMutation();
 
+  const [updateUser] = useUpdateUserMutation();
   const { data: rtkDepartments, isFetching: isFetchingDepartments } =
     useGetDepartmentsQuery();
   const { data: rtkRoles, isFetching: isFetchingRoles } = useGetRolesQuery();
@@ -57,18 +57,13 @@ const UpdateUser = () => {
       Role: +selectedRole,
     };
 
-    updateUser({ updateObj, id })
-      .then((originalPromiseResult) => {
-        localStorage.removeItem("access_token");
-        dispatch(setUser({}));
-        dispatch(logout());
-        navigate("/login");
-        toast.success("User updated successfully");
-      })
-      .catch((err) => {
-        toast.error(err.message);
-        console.log(err);
-      });
+    updateUser({ updateObj, id }).then(() => {
+      localStorage.removeItem("access_token");
+      dispatch(setUser({}));
+      dispatch(logout());
+      navigate("/login");
+      toast.success("User updated successfully");
+    });
   };
 
   if (isFetchingDepartments && isFetchingRoles) {
